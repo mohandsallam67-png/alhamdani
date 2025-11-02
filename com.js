@@ -133,41 +133,28 @@ function generateHeaderHTML(isLoggedIn = false, userData = null) {
 
 // ========== نظام الترجمة باستخدام مترجم جوجل المدمج ==========
 // ========== نظام الترجمة مع مترجم جوجل المحسن ==========
+// ========== نظام الترجمة مع مترجم جوجل المحسن ==========
 class GoogleTranslateIntegration {
     constructor() {
         this.currentLang = localStorage.getItem('currentLang') || 'ar';
         this.isGoogleLoaded = false;
-        this.retryCount = 0;
-        this.maxRetries = 5;
     }
 
-    // تحميل مترجم جوجل مع إعادة المحاولة
+    // تحميل مترجم جوجل
     loadGoogleTranslate() {
-        if (this.isGoogleLoaded) {
-            console.log('✅ مترجم جوجل محمل مسبقاً');
-            return;
-        }
+        if (this.isGoogleLoaded) return;
 
         console.log('🔄 جاري تحميل مترجم جوجل...');
 
         // التأكد من وجود العنصر
         this.ensureGoogleElement();
 
+        // تحميل سكريبت جوجل
         const script = document.createElement('script');
         script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateInit';
-        
-        script.onload = () => {
-            console.log('✅ سكريبت جوجل تم تحميله');
-        };
-
-        script.onerror = () => {
-            console.error('❌ فشل تحميل سكريبت جوجل');
-            this.retryLoad();
-        };
-
         document.head.appendChild(script);
 
-        // تعريف دالة التهيئة العالمية
+        // تعريف دالة التهيئة
         window.googleTranslateInit = () => {
             console.log('🎯 جاري تهيئة مترجم جوجل...');
             this.initializeGoogleTranslate();
@@ -180,7 +167,7 @@ class GoogleTranslateIntegration {
         if (!element) {
             element = document.createElement('div');
             element.id = 'google_translate_element';
-            element.style.cssText = 'position:absolute; top:-1000px; left:-1000px; width:0; height:0; overflow:hidden;';
+            element.style.cssText = 'display: none;';
             document.body.appendChild(element);
             console.log('✅ تم إنشاء عنصر جوجل');
         }
@@ -190,42 +177,19 @@ class GoogleTranslateIntegration {
     // تهيئة مترجم جوجل
     initializeGoogleTranslate() {
         try {
-            const googleElement = this.ensureGoogleElement();
-            
             new google.translate.TranslateElement({
                 pageLanguage: 'ar',
                 includedLanguages: 'ar,en',
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false,
-                multilanguagePage: true
+                autoDisplay: false
             }, 'google_translate_element');
 
             this.isGoogleLoaded = true;
             this.hideGoogleBanner();
             console.log('✅ مترجم جوجل جاهز للاستخدام');
 
-            // تطبيق اللغة المحفوظة بعد التهيئة
-            setTimeout(() => {
-                const savedLang = localStorage.getItem('currentLang');
-                if (savedLang === 'en') {
-                    this.changeLanguage('en');
-                }
-            }, 1000);
-
         } catch (error) {
             console.error('❌ خطأ في تهيئة مترجم جوجل:', error);
-            this.retryLoad();
-        }
-    }
-
-    // إعادة المحاولة
-    retryLoad() {
-        if (this.retryCount < this.maxRetries) {
-            this.retryCount++;
-            console.log(`🔄 إعادة المحاولة ${this.retryCount}/${this.maxRetries}`);
-            setTimeout(() => this.loadGoogleTranslate(), 2000);
-        } else {
-            console.error('💥 فشل جميع محاولات التحميل');
         }
     }
 
@@ -234,127 +198,87 @@ class GoogleTranslateIntegration {
         console.log(`🎯 محاولة التبديل إلى: ${lang}`);
 
         if (!this.isGoogleLoaded) {
-            console.log('⏳ المترجم غير جاهز، جاري التحميل...');
+            console.log('⏳ جاري تحميل المترجم أولاً...');
             this.loadGoogleTranslate();
-            setTimeout(() => this.changeLanguage(lang), 1500);
+            setTimeout(() => this.changeLanguage(lang), 2000);
             return;
         }
 
-        // الطريقة المضمونة للتبديل
-        this.switchLanguage(lang);
-    }
-
-    // تبديل اللغة بشكل آمن
-    switchLanguage(lang) {
-        try {
-            // الطريقة 1: استخدام select مباشرة
-            const select = document.querySelector('.goog-te-combo');
-            if (select) {
-                select.value = lang;
-                select.dispatchEvent(new Event('change'));
-                console.log(`✅ تم التبديل إلى ${lang} باستخدام select`);
-            } else {
-                // الطريقة 2: استخدام iframe جوجل
-                this.forceLanguageSwitch(lang);
-            }
-
-            this.currentLang = lang;
-            localStorage.setItem('currentLang', lang);
-            this.updateUI(lang);
-
-        } catch (error) {
-            console.error('❌ خطأ في تبديل اللغة:', error);
-        }
-    }
-
-    // طريقة إجبارية لتبديل اللغة
-    forceLanguageSwitch(lang) {
-        console.log('🔄 استخدام الطريقة الإجبارية لتبديل اللغة');
-        
-        // إنشاء iframe جوجل يدوياً
-        const iframe = document.querySelector('.goog-te-menu-frame');
-        if (iframe && iframe.contentWindow) {
-            try {
-                iframe.contentWindow.postMessage({
-                    type: 'change_language',
-                    language: lang
-                }, '*');
-            } catch (e) {
-                console.log('⚠️ لا يمكن الوصول إلى iframe');
-            }
+        const select = document.querySelector('.goog-te-combo');
+        if (select) {
+            select.value = lang;
+            select.dispatchEvent(new Event('change'));
+            console.log(`✅ تم التبديل إلى ${lang}`);
+        } else {
+            console.log('❌ عنصر الاختيار غير موجود');
+            // طريقة بديلة
+            this.fallbackTranslation(lang);
         }
 
-        // تحديث الواجهة رغم ذلك
         this.currentLang = lang;
         localStorage.setItem('currentLang', lang);
         this.updateUI(lang);
+    }
+
+    // ترجمة احتياطية
+    fallbackTranslation(lang) {
+        console.log('🔄 استخدام الترجمة الاحتياطية');
+        // ترجمة بسيطة للعناصر الأساسية
+        const translations = {
+            ar: {
+                'Home': 'الرئيسية',
+                'Study Grants': 'المنح الدراسية',
+                'About Us': 'من نحن',
+                'Contact Us': 'تواصل معنا',
+                'Login': 'تسجيل الدخول',
+                'Search here': 'ابحث هنا'
+            },
+            en: {
+                'الرئيسية': 'Home',
+                'المنح الدراسية': 'Study Grants',
+                'من نحن': 'About Us',
+                'تواصل معنا': 'Contact Us',
+                'تسجيل الدخول': 'Login',
+                'ابحث هنا': 'Search here'
+            }
+        };
+
+        const trans = translations[lang];
+        document.querySelectorAll('a, span, button, h1, h2, h3, h4, h5, h6').forEach(el => {
+            const text = el.textContent.trim();
+            if (trans[text]) {
+                el.textContent = trans[text];
+            }
+        });
     }
 
     // إخفاء شريط جوجل
     hideGoogleBanner() {
         const style = document.createElement('style');
         style.innerHTML = `
-            .goog-te-banner-frame { 
-                display: none !important; 
-                visibility: hidden !important;
-                height: 0 !important;
-                width: 0 !important;
-            }
-            .goog-te-menu-value { 
-                display: none !important; 
-            }
-            .goog-te-gadget { 
-                font-size: 0 !important; 
-            }
-            .goog-te-gadget span { 
-                display: none !important; 
-            }
-            .goog-te-combo { 
-                margin: 0 !important; 
-                padding: 5px !important;
-                position: absolute;
-                top: -1000px;
-            }
-            #google_translate_element { 
-                display: none !important; 
-            }
-            .skiptranslate { 
-                display: none !important; 
-            }
-            body { 
-                top: 0 !important; 
-                position: static !important;
-            }
-            .goog-te-menu-frame {
-                position: absolute !important;
-                top: -1000px !important;
-            }
+            .goog-te-banner-frame { display: none !important; }
+            .goog-te-menu-value { display: none !important; }
+            .goog-te-gadget { display: none !important; }
+            .goog-te-combo { margin: 5px !important; }
+            #google_translate_element { display: none; }
+            .skiptranslate { display: none !important; }
+            body { top: 0px !important; }
         `;
         document.head.appendChild(style);
-        console.log('✅ تم إخفاء شريط جوجل');
     }
 
     // تحديث الواجهة
     updateUI(lang) {
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         document.documentElement.lang = lang;
-        document.documentElement.setAttribute('data-lang', lang);
         
-        // تحديث زر اللغة
         const translateBtn = document.querySelector('.translate-btn');
         if (translateBtn) {
             translateBtn.textContent = lang === 'ar' ? '🌐 English' : '🌐 العربية';
         }
-
-        // تحديث الأزرار النشطة
-        document.querySelectorAll('.translate-option').forEach(option => {
-            option.classList.toggle('active', option.getAttribute('data-lang') === lang);
-        });
-
-        console.log(`🎨 تم تحديث الواجهة للغة: ${lang}`);
     }
 
-    // التحقق من حالة المترجم
+    // التحقق من الحالة
     checkStatus() {
         console.log('📊 حالة المترجم:', {
             isLoaded: this.isGoogleLoaded,
@@ -365,8 +289,12 @@ class GoogleTranslateIntegration {
     }
 }
 
-// إنشاء المترجم
-const translator = new GoogleTranslateIntegration();
+// إنشاء نسخة عامة
+const pageTranslator = new GoogleTranslateIntegration();
+
+// جعل الدالة متاحة globally
+window.pageTranslator = pageTranslator;
+window.checkTranslatorStatus = () => pageTranslator.checkStatus();
 // توليد زر الدخول للزوار
 function generateLoginButtonHTML() {
     return `<button class="login-btn" data-key="login">تسجيل الدخول</button>`;
@@ -1735,9 +1663,10 @@ function setupTranslation() {
 
 // دالة الترجمة الأساسية
 function changeLanguage(lang) {
-    console.log(`🎯 طلب تغيير اللغة إلى: ${lang}`);
-    translator.changeLanguage(lang);
+    console.log(`🎯 تغيير اللغة إلى: ${lang}`);
+    pageTranslator.changeLanguage(lang);
 }
+
 window.checkTranslatorStatus = () => translator.checkStatus();
 function showForm(formId) {
     const forms = document.querySelectorAll('.form');
@@ -1828,21 +1757,24 @@ function updateUIForLoggedInUser(user) {
 }
 
 
-// ========== التحميل التلقائي ==========
+
+
 document.addEventListener('DOMContentLoaded', function() {
     loadHeaderAndFooter();
     
-    // تهيئة مترجم جوجل بعد تحميل كل شيء
+    // تهيئة مترجم جوجل
     setTimeout(() => {
-        console.log('🚀 بدء تهيئة مترجم جوجل...');
-        translator.loadGoogleTranslate();
+        console.log('🚀 بدء تحميل مترجم جوجل...');
+        pageTranslator.loadGoogleTranslate();
         
-        // التحقق من الحالة بعد 3 ثواني
-        setTimeout(() => {
-            translator.checkStatus();
-        }, 3000);
-    }, 1500);
+        // تطبيق اللغة المحفوظة
+        const savedLang = localStorage.getItem('currentLang') || 'ar';
+        if (savedLang === 'en') {
+            setTimeout(() => pageTranslator.changeLanguage('en'), 3000);
+        }
+    }, 1000);
 });
+
 
 function getStatusClass(status) {
     const statusMap = {
