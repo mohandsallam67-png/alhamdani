@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="grants_title">المنح الدراسية - وكالة الهمداني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="header-footer.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="gra.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/requests-style.css?v=<?php echo time(); ?>">
+</head>
+
+<body>
+    <!-- سيتم إضافة الهيدر من ملف منفصل -->
+    <div id="header-container"></div>
+    <!-- المحتوى الرئيسي -->
+    <div class="scholarship-container">
+        <!-- شريط البحث والتصفية -->
+        <div class="search-section">
+            <div class="search-group">
+                <input type="text" id="mainSearchInput" placeholder="ابحث عن الجامعة، البرنامج، المدينة..."
+                    data-key="grants_search_placeholder">
+                <select class="view-select" id="viewType">
+                    <option value="programs" data-key="grants_view_programs">البرامج</option>
+                    <option value="universities" data-key="grants_view_universities">الجامعات</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- المحتوى الرئيسي - صف واحد -->
+        <div class="main-content">
+            <!-- الجانب الأيسر - التصفية -->
+            <div class="filter-section">
+                <!-- سيتتم تعبئة هذا القسم ديناميكياً حسب نوع العرض -->
+            </div>
+
+            <!-- الجانب الأيمن - المحتوى -->
+            <div class="content-section">
+                <!-- محتوى الجامعات -->
+                <div class="universities-content" id="universitiesView">
+                    <div class="universities-grid" id="universitiesContainer">
+                        <!-- سيتم تعبئة البطاقات ديناميكياً -->
+                    </div>
+                </div>
+
+                <!-- محتوى البرامج -->
+                <div class="programs-content active" id="programsView">
+                    <div class="table-wrapper">
+                        <div class="table-container">
+                            <!-- رأس الجدول -->
+                            <div class="table-header">
+                                <div class="header-cell" data-key="grants_table_city">المدينة</div>
+                                <div class="header-cell" data-key="grants_table_program">اسم البرنامج</div>
+                                <div class="header-cell" data-key="grants_table_degree">الدرجة العلمية</div>
+                                <div class="header-cell" data-key="grants_table_language">لغة التدريس</div>
+                                <div class="header-cell" data-key="grants_table_scholarship">نوع المنحة</div>
+                                <div class="header-cell" data-key="grants_table_deadline">الموعد النهائي</div>
+                                <div class="header-cell" data-key="grants_table_details">التفاصيل</div>
+                                <div class="header-cell" data-key="grants_table_apply">تقديم الطلب</div>
+                            </div>
+                            <!-- صفوف الجدول سيتم تعبئتها ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- سيتم إضافة الفوتر من ملف منفصل -->
+
+
+    <!-- النوافذ المنبثقة -->
+    <div class="modal-overlay" id="universityDetailsModal">
+        <div class="details-modal">
+            <div class="modal-header">
+                <h2 id="modalUniversityName">اسم الجامعة</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="university-info">
+                    <p id="modalUniversityDescription">وصف الجامعة...</p>
+                    <p id="modalUniversityDetails">تفاصيل إضافية...</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-apply-btn">تقديم الآن</button>
+            </div>
+        </div>
+    </div>
+
+    <!--************************************************-->
+    <div class="modal-overlay" id="applicationModal">
+        <div class="application-modal">
+            <div class="modal-header modal-header-modal">
+                <img id="header-image-modal" src="logo1.png" alt="">
+                <h2 data-key="grants_application_title">نموذج التقديم</h2>
+                <button class="close-modal" onclick="closeApplicationModal()">&times;</button>
+            </div>
+
+            <div class="application-tabs">
+                <div class="application-tab active" data-tab="personal">
+                    <i class="fas fa-user"></i>
+                    <span data-key="grants_tab_personal">المعلومات الشخصية</span>
+                </div>
+                <div class="application-tab" data-tab="family">
+                    <i class="fas fa-users"></i>
+                    <span data-key="grants_tab_family">البيانات العائلية</span>
+                </div>
+                <div class="application-tab" data-tab="academic">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span data-key="grants_tab_academic">البيانات الأكاديمية</span>
+                </div>
+                <div class="application-tab" data-tab="documents">
+                    <i class="fas fa-file-alt"></i>
+                    <span data-key="grants_tab_documents">المستندات</span>
+                </div>
+                <div class="application-tab" data-tab="review">
+                    <i class="fas fa-check-circle"></i>
+                    <span data-key="grants_tab_review">المراجعة والتقديم</span>
+                </div>
+            </div>
+
+            <div class="application-content">
+                <!-- تبويبة المعلومات الشخصية -->
+                <div class="application-form active" id="personalForm">
+                    <div class="form-section">
+                        <h3 data-key="grants_personal_title">المعلومات الشخصية</h3>
+
+                        <!-- الصف 1: الصورة + الأسماء -->
+                        <div class="form-row photo-names-row">
+                            <div class="photo-upload">
+                                <div class="photo-container" id="photoContainer">
+                                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                                    <div class="photo-placeholder" id="photoPlaceholder">
+                                        <i class="fas fa-camera"></i>
+                                        <span data-key="grants_upload_photo">اضغط لإضافة الصورة</span>
+                                    </div>
+                                    <img id="photoPreview" style="display: none;">
+                                    <button class="delete-photo" id="deletePhoto" style="display: none;">×</button>
+                                </div>
+                            </div>
+                            <div class="names-section">
+                                <div class="form-group">
+                                    <label for="firstName" data-key="grants_first_name">الاسم الأول</label>
+                                    <input type="text" id="firstName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="middleName" data-key="grants_middle_name">الاسم الأوسط</label>
+                                    <input type="text" id="middleName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName" data-key="grants_last_name">الاسم الأخير</label>
+                                    <input type="text" id="lastName" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- الصف 2: الجنسية + الولاية + المنطقة -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nationality" data-key="grants_nationality">الجنسية</label>
+                                <select id="nationality" required>
+                                    <option value="" data-key="grants_choose_nationality">اختر الجنسية</option>
+                                    <option value="saudi">🇸🇦 السعودية</option>
+                                    <option value="uae">🇦🇪 الإمارات</option>
+                                    <option value="qatar">🇶🇦 قطر</option>
+                                    <option value="kuwait">🇰🇼 الكويت</option>
+                                    <option value="oman">🇴🇲 عُمان</option>
+                                    <option value="bahrain">🇧🇭 البحرين</option>
+                                    <option value="yemen">🇾🇪 اليمن</option>
+                                    <option value="egypt">🇪🇬 مصر</option>
+                                    <option value="jordan">🇯🇴 الأردن</option>
+                                    <option value="lebanon">🇱🇧 لبنان</option>
+                                    <option value="syria">🇸🇾 سوريا</option>
+                                    <option value="iraq">🇮🇶 العراق</option>
+                                    <option value="palestine">🇵🇸 فلسطين</option>
+                                    <option value="libya">🇱🇾 ليبيا</option>
+                                    <option value="tunisia">🇹🇳 تونس</option>
+                                    <option value="algeria">🇩🇿 الجزائر</option>
+                                    <option value="morocco">🇲🇦 المغرب</option>
+                                    <option value="sudan">🇸🇩 السودان</option>
+                                    <option value="mauritania">🇲🇷 موريتانيا</option>
+                                    <option value="djibouti">🇩🇯 جيبوتي</option>
+                                    <option value="somalia">🇸🇴 الصومال</option>
+
+                                    <!-- آسيا المهمة -->
+                                    <option value="india">🇮🇳 الهند</option>
+                                    <option value="indonesia">🇮🇩 إندونيسيا</option>
+                                    <option value="malaysia">🇲🇾 ماليزيا</option>
+                                    <option value="thailand">🇹🇭 تايلاند</option>
+                                    <option value="vietnam">🇻🇳 فيتنام</option>
+                                    <option value="japan">🇯🇵 اليابان</option>
+                                    <option value="singapore">🇸🇬 سنغافورة</option>
+
+                                    <!-- أوروبا المهمة -->
+                                    <option value="germany">🇩🇪 ألمانيا</option>
+                                    <option value="france">🇫🇷 فرنسا</option>
+                                    <option value="uk">🇬🇧 بريطانيا</option>
+                                    <option value="italy">🇮🇹 إيطاليا</option>
+                                    <option value="spain">🇪🇸 إسبانيا</option>
+                                    <option value="netherlands">🇳🇱 هولندا</option>
+                                    <option value="switzerland">🇨🇭 سويسرا</option>
+                                    <option value="sweden">🇸🇪 السويد</option>
+                                    <option value="russia">🇷🇺 روسيا</option>
+                                    <option value="poland">🇵🇱 بولندا</option>
+
+                                    <!-- أمريكا الشمالية -->
+                                    <option value="usa">🇺🇸 الولايات المتحدة</option>
+                                    <option value="canada">🇨🇦 كندا</option>
+                                    <option value="mexico">🇲🇽 المكسيك</option>
+
+                                    <!-- أمريكا الجنوبية -->
+                                    <option value="brazil">🇧🇷 البرازيل</option>
+                                    <option value="argentina">🇦🇷 الأرجنتين</option>
+                                    <option value="chile">🇨🇱 تشيلي</option>
+                                    <option value="colombia">🇨🇴 كولومبيا</option>
+                                    <option value="peru">🇵🇪 بيرو</option>
+
+                                    <!-- أفريقيا المهمة -->
+                                    <option value="south_africa">🇿🇦 جنوب أفريقيا</option>
+                                    <option value="nigeria">🇳🇬 نيجيريا</option>
+                                    <option value="kenya">🇰🇪 كينيا</option>
+                                    <option value="ghana">🇬🇭 غانا</option>
+                                    <option value="ethiopia">🇪🇹 إثيوبيا</option>
+                                    <option value="tanzania">🇹🇿 تنزانيا</option>
+                                    <option value="uganda">🇺🇬 أوغندا</option>
+                                    <option value="angola">🇦🇴 أنغولا</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="state" data-key="grants_state">الولاية/المحافظة</label>
+                                <input type="text" id="state">
+                            </div>
+                            <div class="form-group">
+                                <label for="district" data-key="grants_district">المنطقة - الحي</label>
+                                <input type="text" id="district" required>
+                            </div>
+                        </div>
+
+                        <!-- الصف 3: الشارع + الرمز البريدي + رقم المبني -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="street" data-key="grants_street">اسم الشارع</label>
+                                <input type="text" id="street" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zipCode" data-key="grants_zipcode">الرمز البريدي</label>
+                                <input type="number" id="zipCode" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="building" data-key="grants_building">رقم المنزل - المبنى - الشقة</label>
+                                <input type="number" id="building" required>
+                            </div>
+                        </div>
+
+                        <!-- الصف 4: رمز الدولة + الهاتف + الإيميل -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="countryCode" data-key="grants_country_code">رمز الدولة</label>
+                                <select id="countryCode" class="country-code-select">
+                                    <option data-key="grants_country_code">رمز الدولة</option>
+                                    <option value="+966">+966 🇸🇦</option>
+                                    <option value="+967">+967 🇾🇪</option>
+                                    <option value="+20">+20 🇪🇬</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone" data-key="grants_phone">رقم الهاتف</label>
+                                <input type="number" id="phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" data-key="grants_email">البريد الإلكتروني</label>
+                                <input type="email" id="email" required>
+                            </div>
+                        </div>
+
+                        <!-- الصف 5: الميلاد + الجنس + الحالة الاجتماعية -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="birthDate" data-key="grants_birthdate">تاريخ الميلاد</label>
+                                <input type="date" id="birthDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender" data-key="grants_gender">الجنس</label>
+                                <select id="gender" required>
+                                    <option value="" data-key="grants_choose_sex">اختر الجنس</option>
+                                    <option value="ذكر">ذكر</option>
+                                    <option value="أنثى">أنثى</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="maritalStatus" data-key="grants_marital_status">الحالة الاجتماعية</label>
+                                <select id="maritalStatus" required>
+                                    <option value="" data-key="grants_choose_status">اختر الحالة</option>
+                                    <option value="أعزب">أعزب/عزباء</option>
+                                    <option value="متزوج">متزوج/متزوجة</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- أزرار التحكم -->
+                        <div class="form-actions">
+                            <button type="button" class="save-btn" onclick="savePersonalInfo()"
+                                data-key="grants_save">حفظ</button>
+                            <button type="button" class="edit-btn" onclick="enableEditing()"
+                                data-key="grants_edit">تعديل</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- تبويبات أخرى -->
+                <!-- تبويبة البيانات العائلية -->
+                <div class="application-form" id="familyForm">
+                    <div class="form-section">
+                        <h3 data-key="grants_family_title">البيانات العائلية</h3>
+
+                        <!-- بيانات الأب -->
+                        <div class="parent-section">
+                            <h4 class="parent-title" data-key="grants_father_data">بيانات الأب</h4>
+                            <div class="parent-content">
+                                <!-- الصف 1: الأسماء -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="fatherFirstName" data-key="grants_first_name">الاسم الأول</label>
+                                        <input type="text" id="fatherFirstName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fatherMiddleName" data-key="grants_middle_name">الاسم الأوسط</label>
+                                        <input type="text" id="fatherMiddleName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fatherLastName" data-key="grants_last_name">الاسم الأخير</label>
+                                        <input type="text" id="fatherLastName" required>
+                                    </div>
+                                </div>
+
+                                <!-- الصف 2: الجنسية وتاريخ الميلاد -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="fatherNationality" data-key="grants_nationality">الجنسية</label>
+                                        <select id="fatherNationality" required>
+                                            <option value="" data-key="grants_choose_nationality">اختر الجنسية</option>
+                                            <option value="yemen">اليمن</option>
+                                            <option value="saudi">السعودية</option>
+                                            <option value="egypt">مصر</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fatherBirthDate" data-key="grants_birthdate">تاريخ الميلاد</label>
+                                        <input type="date" id="fatherBirthDate" required>
+                                    </div>
+                                    <div class="form-group passport-photo">
+                                        <label data-key="grants_passport_photo">صورة الجواز</label>
+                                        <div class="passport-container" id="fatherPassportContainer">
+                                            <input type="file" id="fatherPassportInput" accept="image/*"
+                                                style="display: none;">
+                                            <div class="passport-placeholder" id="fatherPassportPlaceholder">
+                                                <i class="fas fa-passport"></i>
+                                                <span data-key="grants_upload_passport">زر رفع صورة</span>
+                                            </div>
+                                            <img id="fatherPassportPreview" style="display: none;">
+                                            <button class="delete-passport" id="fatherDeletePassport"
+                                                style="display: none;">×</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- الصف 3: الاتصال -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="fatherCountryCode" data-key="grants_country_code">رمز الدولة</label>
+                                        <select id="fatherCountryCode" class="country-code-select">
+                                            <option value="+966">+966 🇸🇦</option>
+                                            <option value="+967">+967 🇾🇪</option>
+                                            <option value="+20">+20 🇪🇬</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fatherPhone" data-key="grants_phone">رقم الهاتف</label>
+                                        <input type="number" id="fatherPhone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="fatherEmail" data-key="grants_email">البريد الإلكتروني</label>
+                                        <input type="email" id="fatherEmail" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- بيانات الأم -->
+                        <div class="parent-section">
+                            <h4 class="parent-title" data-key="grants_mother_data">بيانات الأم</h4>
+                            <div class="parent-content">
+                                <!-- الصف 1: الأسماء -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="motherFirstName" data-key="grants_first_name">الاسم الأول</label>
+                                        <input type="text" id="motherFirstName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="motherMiddleName" data-key="grants_middle_name">الاسم الأوسط</label>
+                                        <input type="text" id="motherMiddleName">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="motherLastName" data-key="grants_last_name">الاسم الأخير</label>
+                                        <input type="text" id="motherLastName" required>
+                                    </div>
+                                </div>
+                                <!-- الصف 2: الجنسية وتاريخ الميلاد -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="motherNationality" data-key="grants_nationality">الجنسية</label>
+                                        <select id="motherNationality" required>
+                                            <option value="" data-key="grants_choose_nationality">اختر الجنسية</option>
+                                            <option value="yemen">اليمن</option>
+                                            <option value="saudi">السعودية</option>
+                                            <option value="egypt">مصر</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="motherBirthDate" data-key="grants_birthdate">تاريخ الميلاد</label>
+                                        <input type="date" id="motherBirthDate" required>
+                                    </div>
+                                    <div class="form-group passport-photo">
+                                        <label data-key="grants_passport_photo">صورة الجواز</label>
+                                        <div class="passport-container" id="motherPassportContainer">
+                                            <input type="file" id="motherPassportInput" accept="image/*"
+                                                style="display: none;">
+                                            <div class="passport-placeholder" id="motherPassportPlaceholder">
+                                                <i class="fas fa-passport"></i>
+                                                <span data-key="grants_upload_passport">زر رفع صورة</span>
+                                            </div>
+                                            <img id="motherPassportPreview" style="display: none;">
+                                            <button class="delete-passport" id="motherDeletePassport"
+                                                style="display: none;">×</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- الصف 3: الاتصال -->
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="motherCountryCode" data-key="grants_country_code">رمز الدولة</label>
+                                        <select id="motherCountryCode" class="country-code-select">
+                                            <option value="+966">+966 🇸🇦</option>
+                                            <option value="+967">+967 🇾🇪</option>
+                                            <option value="+20">+20 🇪🇬</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="motherPhone" data-key="grants_phone">رقم الهاتف</label>
+                                        <input type="number" id="motherPhone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="motherEmail" data-key="grants_email">البريد الإلكتروني</label>
+                                        <input type="email" id="motherEmail" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- أزرار التحكم -->
+                        <div class="form-actions">
+                            <button type="button" class="save-btn" onclick="saveFamilyInfo()"
+                                data-key="grants_save">حفظ</button>
+                            <button type="button" class="edit-btn" onclick="enableFamilyEditing()"
+                                data-key="grants_edit">تعديل</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تبويبة البيانات الأكاديمية -->
+                <div class="application-form" id="academicForm">
+                    <div class="form-section">
+                        <h3 data-key="grants_academic_title">البيانات الأكاديمية</h3>
+
+                        <!-- البيانات الثانوية -->
+                        <div class="academic-section">
+                            <h4 class="academic-title" data-key="grants_secondary_edu">البيانات الثانوية</h4>
+                            <div class="academic-content">
+                                <div class="academic-row">
+                                    <!-- الجهة اليمنى: البيانات -->
+                                    <div class="academic-data">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="schoolName" data-key="grants_school_name">اسم
+                                                    المدرسة</label>
+                                                <input type="text" id="schoolName" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="schoolGPA" data-key="grants_gpa">المعدل %</label>
+                                                <input type="number" id="schoolGPA" min="0" max="100" step="0.1"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="schoolGraduationYear" data-key="grants_graduation_year">سنة
+                                                    التخرج</label>
+                                                <input type="date" id="schoolGraduationYear" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- الجهة اليسرى: ملف الشهادة وبيان الدرجات -->
+                                    <div class="academic-document">
+                                        <!-- ملف الشهادة -->
+                                        <div class="form-group document-photo">
+                                            <label data-key="grants_certificate_file">ملف الشهادة</label>
+                                            <div class="document-container" id="schoolCertificateContainer">
+                                                <input type="file" id="schoolCertificateInput" accept="image/*,.pdf"
+                                                    style="display: none;">
+                                                <div class="document-placeholder" id="schoolCertificatePlaceholder">
+                                                    <i class="fas fa-file-certificate"></i>
+                                                    <span data-key="grants_upload_document">زر رفع ملف</span>
+                                                </div>
+                                                <img id="schoolCertificatePreview" style="display: none;">
+                                                <button class="delete-document" id="schoolDeleteCertificate"
+                                                    style="display: none;">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- ملف بيان الدرجات -->
+                                        <div class="form-group document-photo">
+                                            <label>بيان الدرجات</label>
+                                            <div class="document-container" id="schoolTranscriptContainer">
+                                                <input type="file" id="schoolTranscriptInput" accept="image/*,.pdf"
+                                                    style="display: none;">
+                                                <div class="document-placeholder" id="schoolTranscriptPlaceholder">
+                                                    <i class="fas fa-file-alt"></i>
+                                                    <span>زر رفع ملف</span>
+                                                </div>
+                                                <img id="schoolTranscriptPreview" style="display: none;">
+                                                <button class="delete-document" id="schoolDeleteTranscript"
+                                                    style="display: none;">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- التخصصات والدرجة العلمية -->
+                        <div class="academic-section">
+                            <h4 class="academic-title" data-key="grants_specialization_degree">التخصصات والدرجة العلمية
+                            </h4>
+                            <div class="academic-content">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="specialization" data-key="grants_specialization">التخصص</label>
+                                        <select id="specialization" required>
+                                            <option value="" data-key="grants_choose_Major">اختر التخصص</option>
+                                            <option value="medical">طبية</option>
+                                            <option value="engineering">هندسة</option>
+                                            <option value="science">علوم</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="department" data-key="grants_department">القسم</label>
+                                        <select id="department" required>
+                                            <option value="" data-key="grants_select_specialization">اختر القسم</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="academicDegree" data-key="grants_academic_degree">الدرجة
+                                            الأكاديمية</label>
+                                        <select id="academicDegree" required>
+                                            <option value="" data-key="grants_choose_degree">اختر الدرجة</option>
+                                            <option value="بكالوريوس">بكالوريوس</option>
+                                            <option value="ماجستير">ماجستير</option>
+                                            <option value="دكتوراه">دكتوراه</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- البيانات الأكاديمية (تظهر فقط لماجستير/دكتوراه) -->
+                        <div class="academic-section" id="higherEducationSection" style="display: none;">
+                            <h4 class="academic-title">
+                                <i class="fas fa-university"></i>
+                                <span data-key="grants_academic_title">البيانات الأكاديمية</span>
+                            </h4>
+
+                            <div class="academic-content">
+                                <div class="academic-row">
+                                    <!-- الجهة اليمنى: البيانات -->
+                                    <div class="academic-data">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="universityName" data-key="grants_university_name">اسم
+                                                    الجامعة</label>
+                                                <input type="text" id="universityName">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="facultyName" data-key="grants_faculty_name">الكلية</label>
+                                                <input type="text" id="facultyName">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="universitySpecialization"
+                                                    data-key="grants_specialization">التخصص</label>
+                                                <input type="text" id="universitySpecialization">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="universityGPA" data-key="grants_gpa">المعدل %</label>
+                                                <input type="number" id="universityGPA" min="0" max="100" step="0.1">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="enrollmentYear" data-key="grants_enrollment_year">سنة
+                                                    الالتحاق</label>
+                                                <input type="date" id="enrollmentYear" min="1900" max="2030">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="universityGraduationYear"
+                                                    data-key="grants_graduation_year">سنة التخرج</label>
+                                                <input type="date" id="universityGraduationYear" min="1900" max="2030">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- الجهة اليسرى: مستند الشهادة وبيان الدرجات -->
+                                    <div class="academic-document">
+                                        <!-- ملف الشهادة الجامعية -->
+                                        <div class="form-group document-photo">
+                                            <label data-key="grants_certificate_file">مستند الشهادة</label>
+                                            <div class="document-container" id="universityCertificateContainer">
+                                                <input type="file" id="universityCertificateInput" accept="image/*,.pdf"
+                                                    style="display: none;">
+                                                <div class="document-placeholder" id="universityCertificatePlaceholder">
+                                                    <i class="fas fa-file-university"></i>
+                                                    <span data-key="grants_upload_document">زر رفع ملف</span>
+                                                </div>
+                                                <img id="universityCertificatePreview" style="display: none;">
+                                                <button class="delete-document" id="universityDeleteCertificate"
+                                                    style="display: none;">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- ملف بيان الدرجات الجامعية -->
+                                        <div class="form-group document-photo">
+                                            <label>بيان الدرجات الجامعية</label>
+                                            <div class="document-container" id="universityTranscriptContainer">
+                                                <input type="file" id="universityTranscriptInput" accept="image/*,.pdf"
+                                                    style="display: none;">
+                                                <div class="document-placeholder" id="universityTranscriptPlaceholder">
+                                                    <i class="fas fa-file-graduation-cap"></i>
+                                                    <span>زر رفع ملف</span>
+                                                </div>
+                                                <img id="universityTranscriptPreview" style="display: none;">
+                                                <button class="delete-document" id="universityDeleteTranscript"
+                                                    style="display: none;">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- أزرار التحكم -->
+                        <div class="form-actions">
+                            <button type="button" class="save-btn" onclick="saveAcademicInfo()"
+                                data-key="grants_save">حفظ</button>
+                            <button type="button" class="edit-btn" onclick="enableAcademicEditing()"
+                                data-key="grants_edit">تعديل</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تبويبة المستندات -->
+                <div class="application-form" id="documentsForm">
+                    <div class="form-section">
+                        <h3 data-key="grants_documents_title">المستندات</h3>
+
+                        <!-- الصف الأول -->
+                        <div class="documents-grid">
+                            <!--passport-->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-passport"></i>
+                                    <h4 data-key="grants_passport_record">جواز سفر</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="passportPreviewBox">
+                                    <div class="preview-content">
+                                        <img id="passportImagePreview" style="display: none;">
+                                        <span class="file-name" id="passportFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="passportEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <!-- <span>سيظهر الملف هنا بعد الرفع</span> -->
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="passportDeletePreview" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="passportInput" accept="image/*,.pdf"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width" id="passportUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- فحص طبي-->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-file-medical"></i>
+                                    <h4 data-key="grants_medical_record">الفحص الطبي</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="medicalCheckPreviewBox">
+                                    <div class="preview-content">
+                                        <img id="medicalCheckImagePreview" style="display: none;">
+                                        <span class="file-name" id="medicalCheckFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="medicalCheckEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <!-- <span>سيظهر الملف هنا بعد الرفع</span> -->
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="medicalCheckDeletePreview"
+                                        style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="medicalCheckInput" accept="image/*,.pdf"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width"
+                                            id="medicalCheckUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- فيش وتشبية -->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-id-card"></i>
+                                    <h4 data-key="grants_criminal_record">فيش وتشبية</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="criminalRecordPreviewBox">
+                                    <div class="preview-content">
+                                        <img id="criminalRecordImagePreview" style="display: none;">
+                                        <span class="file-name" id="criminalRecordFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="criminalRecordEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <!-- <span>سيظهر الملف هنا بعد الرفع</span> -->
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="criminalRecordDeletePreview"
+                                        style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="criminalRecordInput" accept="image/*,.pdf"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width"
+                                            id="criminalRecordUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- السيرة الذاتية -->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-file-alt"></i>
+                                    <h4 data-key="grants_cv">السيرة الذاتية</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="cvPreviewBox">
+                                    <div class="preview-content">
+                                        <img id="cvImagePreview" style="display: none;">
+                                        <span class="file-name" id="cvFileNamePreview" style="display: none;"></span>
+                                        <div class="empty-state" id="cvEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="cvDeletePreview" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="cvInput" accept=".pdf,.doc,.docx,image/*"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width" id="cvUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- التوصية المدرسية -->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-user-graduate"></i>
+                                    <h4 data-key="grants_school_recommendation">التوصية</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="schoolRecommendationPreviewBox">
+                                    <div class="preview-content">
+                                        <img id="schoolRecommendationImagePreview" style="display: none;">
+                                        <span class="file-name" id="schoolRecommendationFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="schoolRecommendationEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <!-- <span>سيظهر الملف هنا بعد الرفع</span> -->
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="schoolRecommendationDeletePreview"
+                                        style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="schoolRecommendationInput" accept="image/*,.pdf"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width"
+                                            id="schoolRecommendationUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- رسالة الدافع -->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                    <h4 data-key="grants_motivation_letter">رسالة الدافع</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="motivationPreviewBox">
+                                    <div class="preview-content">
+                                        <img id="motivationImagePreview" style="display: none;">
+                                        <span class="file-name" id="motivationFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="motivationEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="motivationDeletePreview" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="motivationInput" accept=".pdf,.doc,.docx,image/*"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width" id="motivationUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ابلكيشن فورم-->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-birthday-cake"></i>
+                                    <h4 data-key="grants_birth_Application_form">أبلكيشن فورم</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="birthCertificatePreviewBox">
+                                    <div class="preview-content">
+                                        <img id="birthCertificateImagePreview" style="display: none;">
+                                        <span class="file-name" id="birthCertificateFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="birthCertificateEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <!-- <span>سيظهر الملف هنا بعد الرفع</span> -->
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="birthCertificateDeletePreview"
+                                        style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="birthCertificateInput" accept="image/*,.pdf"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width"
+                                            id="birthCertificateUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- شهادة إنجليزية -->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-language"></i>
+                                    <h4 data-key="grants_english_certificate">شهادة إنجليزية</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="englishCertificatePreviewBox">
+                                    <div class="preview-content">
+                                        <img id="englishCertificateImagePreview" style="display: none;">
+                                        <span class="file-name" id="englishCertificateFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="englishCertificateEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <!-- <span>سيظهر الملف هنا بعد الرفع</span> -->
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="englishCertificateDeletePreview"
+                                        style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="englishCertificateInput" accept="image/*,.pdf"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width"
+                                            id="englishCertificateUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span data-key="grants_choose_file">اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- كشف حساب بنكي -->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <h4>كشف حساب بنكي</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="bankStatementPreviewBox">
+                                    <div class="preview-content">
+                                        <img id="bankStatementImagePreview" style="display: none;">
+                                        <span class="file-name" id="bankStatementFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="bankStatementEmptyState">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="bankStatementDeletePreview"
+                                        style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="bankStatementInput" accept="image/*,.pdf"
+                                            style="display: none;">
+                                        <button type="button" class="upload-button full-width"
+                                            id="bankStatementUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span>اختر ملف</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- فيديو تعريفي -->
+                            <div class="document-card enhanced-card">
+                                <div class="card-header">
+                                    <i class="fas fa-video"></i>
+                                    <h4>فيديو تعريفي</h4>
+                                </div>
+
+                                <!-- عرض الملف -->
+                                <div class="file-preview-box" id="introVideoPreviewBox">
+                                    <div class="preview-content">
+                                        <video id="introVideoPreview"
+                                            style="display: none; max-width: 100%; max-height: 120px;"></video>
+                                        <span class="file-name" id="introVideoFileNamePreview"
+                                            style="display: none;"></span>
+                                        <div class="empty-state" id="introVideoEmptyState">
+                                            <i class="fas fa-video"></i>
+                                        </div>
+                                    </div>
+                                    <button class="delete-file-top" id="introVideoDeletePreview" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+
+                                <!-- زر الرفع -->
+                                <div class="card-options">
+                                    <div class="simple-upload">
+                                        <input type="file" id="introVideoInput" accept="video/*" style="display: none;">
+                                        <button type="button" class="upload-button full-width" id="introVideoUploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span>اختر ملف</span>
+                                        </button>
+                                    </div>
+                                    <div class="video-info">
+                                        <small><i class="fas fa-info-circle"></i> الحد الأقصى: 2 دقائق</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- البطاقة الأساسية الدائمة -->
+                        <!-- البطاقة الأولى -->
+                        <div class="document-card enhanced-card">
+                            <div class="card-header">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>المستند الداعم (1)</h4>
+                            </div>
+                        
+                            <div class="file-preview-box" id="supportFile1PreviewBox">
+                                <div class="preview-content">
+                                    <img id="supportFile1ImagePreview" style="display: none;">
+                                    <span class="file-name" id="supportFile1FileNamePreview" style="display: none;"></span>
+                                    <div class="empty-state" id="supportFile1EmptyState">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                </div>
+                                <button class="delete-file-top" id="supportFile1DeletePreview" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        
+                            <div class="card-options">
+                                <div class="upload-with-add">
+                                    <div class="simple-upload">
+                                        <input type="file" id="supportFile1Input" accept="image/*,.pdf,.doc,.docx" style="display: none;">
+                                        <button type="button" class="upload-button" id="supportFile1UploadBtn">
+                                            <i class="fas fa-paperclip"></i>
+                                            <span>اختر ملف</span>
+                                        </button>
+                                    </div>
+                                    <!-- زر الإضافة في البطاقة الأولى فقط -->
+                                    <button type="button" class="add-card-btn" id="addCardBtn" onclick="addSupportCard()">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- البطاقة الثانية - مخفية -->
+                        <div class="document-card enhanced-card" id="supportCard2" style="display: none;">
+                            <div class="card-header">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>المستند الداعم (2)</h4>
+                            </div>
+                        
+                            <div class="file-preview-box" id="supportFile2PreviewBox">
+                                <div class="preview-content">
+                                    <img id="supportFile2ImagePreview" style="display: none;">
+                                    <span class="file-name" id="supportFile2FileNamePreview" style="display: none;"></span>
+                                    <div class="empty-state" id="supportFile2EmptyState">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                </div>
+                                <button class="delete-file-top" id="supportFile2DeletePreview" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        
+                            <!-- بدون زر إضافة -->
+                            <div class="card-options">
+                                <div class="simple-upload">
+                                    <input type="file" id="supportFile2Input" accept="image/*,.pdf,.doc,.docx" style="display: none;">
+                                    <button type="button" class="upload-button full-width" id="supportFile2UploadBtn">
+                                        <i class="fas fa-paperclip"></i>
+                                        <span>اختر ملف</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- البطاقة الثالثة - مخفية -->
+                        <div class="document-card enhanced-card" id="supportCard3" style="display: none;">
+                            <div class="card-header">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>المستند الداعم (3)</h4>
+                            </div>
+                        
+                            <div class="file-preview-box" id="supportFile3PreviewBox">
+                                <div class="preview-content">
+                                    <img id="supportFile3ImagePreview" style="display: none;">
+                                    <span class="file-name" id="supportFile3FileNamePreview" style="display: none;"></span>
+                                    <div class="empty-state" id="supportFile3EmptyState">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                </div>
+                                <button class="delete-file-top" id="supportFile3DeletePreview" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        
+                            <!-- بدون زر إضافة -->
+                            <div class="card-options">
+                                <div class="simple-upload">
+                                    <input type="file" id="supportFile3Input" accept="image/*,.pdf,.doc,.docx" style="display: none;">
+                                    <button type="button" class="upload-button full-width" id="supportFile3UploadBtn">
+                                        <i class="fas fa-paperclip"></i>
+                                        <span>اختر ملف</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        </div>
+
+
+
+
+
+
+                        <!-- أزرار التحكم -->
+                        <div class="form-actions">
+                            <button type="button" class="save-btn" onclick="saveDocumentsInfo()"
+                                data-key="grants_save">حفظ</button>
+                            <button type="button" class="edit-btn" onclick="enableDocumentsEditing()"
+                                data-key="grants_edit">تعديل</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- تبويبة المراجعة والتقديم -->
+                <div class="application-form" id="reviewForm">
+                    <div class="form-section">
+                        <h3 data-key="grants_tab_review">المراجعة والتقديم</h3>
+
+                        <!-- المعلومات الشخصية -->
+                        <div class="review-section">
+                            <h4 class="review-title">
+                                <i class="fas fa-user"></i>
+                                <span data-key="grants_tab_personal">المعلومات الشخصية</span>
+                            </h4>
+
+                            <div class="review-content">
+                                <!-- الصف 1: الصورة + الأسماء -->
+                                <div class="form-row photo-names-row">
+                                    <div class="photo-upload">
+                                        <div class="photo-container">
+                                            <img id="reviewPhotoPreview" class="review-photo">
+                                        </div>
+                                    </div>
+                                    <div class="names-section">
+                                        <div class="review-field">
+                                            <label data-key="grants_first_name">الاسم الأول</label>
+                                            <span id="reviewFirstName" class="review-value"></span>
+                                        </div>
+                                        <div class="review-field">
+                                            <label data-key="grants_middle_name">الاسم الأوسط</label>
+                                            <span id="reviewMiddleName" class="review-value"></span>
+                                        </div>
+                                        <div class="review-field">
+                                            <label data-key="grants_last_name">الاسم الأخير</label>
+                                            <span id="reviewLastName" class="review-value"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- الصف 2: الجنسية + الولاية + المنطقة -->
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_nationality">الجنسية</label>
+                                        <span id="reviewNationality" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_state">الولاية/المحافظة</label>
+                                        <span id="reviewState" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_district">المنطقة - الحي</label>
+                                        <span id="reviewDistrict" class="review-value"></span>
+                                    </div>
+                                </div>
+
+                                <!-- الصف 3: الشارع + الرمز البريدي + رقم المبني -->
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_street">اسم الشارع</label>
+                                        <span id="reviewStreet" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_zipcode">الرمز البريدي</label>
+                                        <span id="reviewZipCode" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_building">رقم المنزل - المبنى - الشقة</label>
+                                        <span id="reviewBuilding" class="review-value"></span>
+                                    </div>
+                                </div>
+
+                                <!-- الصف 4: رمز الدولة + الهاتف + الإيميل -->
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_country_code">رمز الدولة</label>
+                                        <span id="reviewCountryCode" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_phone">رقم الهاتف</label>
+                                        <span id="reviewPhone" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_email">البريد الإلكتروني</label>
+                                        <span id="reviewEmail" class="review-value"></span>
+                                    </div>
+                                </div>
+
+                                <!-- الصف 5: الميلاد + الجنس + الحالة الاجتماعية -->
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_birthdate">تاريخ الميلاد</label>
+                                        <span id="reviewBirthDate" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_gender">الجنس</label>
+                                        <span id="reviewGender" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_marital_status">الحالة الاجتماعية</label>
+                                        <span id="reviewMaritalStatus" class="review-value"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- البيانات العائلية -->
+                        <div class="review-section">
+                            <h4 class="review-title">
+                                <i class="fas fa-users"></i>
+                                <span data-key="grants_family_title">البيانات العائلية</span>
+                            </h4>
+
+                            <!-- بيانات الأب -->
+                            <div class="parent-section">
+                                <h5 class="parent-subtitle" data-key="grants_father_data">بيانات الأب</h5>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_full_name">الاسم الكامل</label>
+                                        <span id="reviewFatherFullName" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_nationality">الجنسية</label>
+                                        <span id="reviewFatherNationality" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_birthdate">تاريخ الميلاد</label>
+                                        <span id="reviewFatherBirthDate" class="review-value"></span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_phone">رقم الهاتف</label>
+                                        <span id="reviewFatherPhone" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_email">البريد الإلكتروني</label>
+                                        <span id="reviewFatherEmail" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_passport_photo">صورة الجواز</label>
+                                        <span id="reviewFatherPassport" class="review-status uploaded"
+                                            data-key="grants_uploaded_photo">✓ مرفوع</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- بيانات الأم -->
+                            <div class="parent-section">
+                                <h5 class="parent-subtitle" data-key="grants_mother_data">بيانات الأم</h5>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_full_name">الاسم الكامل</label>
+                                        <span id="reviewMotherFullName" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_nationality">الجنسية</label>
+                                        <span id="reviewMotherNationality" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_birthdate">تاريخ الميلاد</label>
+                                        <span id="reviewMotherBirthDate" class="review-value"></span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_phone">رقم الهاتف</label>
+                                        <span id="reviewMotherPhone" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_email">البريد الإلكتروني</label>
+                                        <span id="reviewMotherEmail" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_passport_photo">صورة الجواز</label>
+                                        <span id="reviewMotherPassport" class="review-status uploaded"
+                                            data-key="grants_uploaded_photo">✓ مرفوع</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- البيانات الأكاديمية -->
+                        <div class="review-section">
+                            <h4 class="review-title">
+                                <i class="fas fa-graduation-cap"></i>
+                                <span data-key="grants_academic_title">البيانات الأكاديمية</span>
+                            </h4>
+
+                            <!-- البيانات الثانوية -->
+                            <div class="academic-section">
+                                <h5 class="academic-subtitle" data-key="grants_secondary_edu">البيانات الثانوية</h5>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_school_name">اسم المدرسة</label>
+                                        <span id="reviewSchoolName" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_gpa">المعدل %</label>
+                                        <span id="reviewSchoolGPA" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_graduation_year">سنة التخرج</label>
+                                        <span id="reviewSchoolGraduationYear" class="review-value"></span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_certificate_file">ملف الشهادة</label>
+                                        <span id="reviewSchoolCertificate" class="review-status uploaded"
+                                            data-key="grants_upload_photo">✓ مرفوع</span>
+                                    </div>
+                                </div>
+                                <!-- بيان الدرجات الثانوية -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-alt"></i>
+                                        <h4>بيان الدرجات (الثانوية)</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewSchoolTranscriptStatus" class="review-status not-uploaded">✗
+                                                غير مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- التخصصات والدرجة العلمية -->
+                            <div class="academic-section">
+                                <h5 class="academic-subtitle" data-key="grants_specialization_degree">التخصصات والدرجة
+                                    العلمية
+                                </h5>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_specialization">التخصص</label>
+                                        <span id="reviewSpecialization" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_department">القسم</label>
+                                        <span id="reviewDepartment" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_academic_degree">الدرجة الأكاديمية</label>
+                                        <span id="reviewAcademicDegree" class="review-value"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- البيانات الجامعية (تظهر فقط لماجستير/دكتوراه) -->
+                            <div class="academic-section" id="reviewHigherEducationSection" style="display: none;">
+                                <h5 class="academic-subtitle" data-key="grants_higher_edu">البيانات الأكاديمية</h5>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_university_name">اسم الجامعة</label>
+                                        <span id="reviewUniversityName" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_faculty_name">الكلية</label>
+                                        <span id="reviewFacultyName" class="review-value"></span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_specialization">التخصص</label>
+                                        <span id="reviewUniversitySpecialization" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_gpa">المعدل %</label>
+                                        <span id="reviewUniversityGPA" class="review-value"></span>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="review-field">
+                                        <label data-key="grants_enrollment_year">سنة الالتحاق</label>
+                                        <span id="reviewEnrollmentYear" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_graduation_year">سنة التخرج</label>
+                                        <span id="reviewUniversityGraduationYear" class="review-value"></span>
+                                    </div>
+                                    <div class="review-field">
+                                        <label data-key="grants_certificate_file">مستند الشهادة</label>
+                                        <span id="reviewUniversityCertificate" class="review-status uploaded"
+                                            data-key="grants_upload_photo">✓ مرفوع</span>
+                                    </div>
+                                    <!-- بيان الدرجات الجامعية -->
+                                    <div class="document-card enhanced-card" id="reviewUniversityTranscriptCard"
+                                        style="display: none;">
+                                        <div class="card-header">
+                                            <i class="fas fa-file-graduation-cap"></i>
+                                            <h4>بيان الدرجات (الجامعية)</h4>
+                                        </div>
+                                        <div class="file-preview-box">
+                                            <div class="preview-content">
+                                                <span id="reviewUniversityTranscriptStatus"
+                                                    class="review-status not-uploaded">✗ غير مرفوع</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- المستندات -->
+                        <div class="review-section">
+                            <h4 class="review-title">
+                                <i class="fas fa-file-alt"></i>
+                                <span data-key="grants_documents_title">المستندات</span>
+                            </h4>
+
+                            <div class="documents-grid">
+                                <!-- الجواز -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-passport"></i>
+                                        <h4 data-key="grants_passport_record">الجواز</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewPassportStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓ مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- الفحص الطبي -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-medical"></i>
+                                        <h4 data-key="grants_medical_record">الفحص الطبي</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewMedicalCheckStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- فيش وتشبية -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-id-card"></i>
+                                        <h4 data-key="grants_criminal_record">فيش وتشبية</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewCriminalRecordStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- السيرة الذاتية -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-alt"></i>
+                                        <h4 data-key="grants_cv">السيرة الذاتية</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewCVStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓ مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- التوصية المدرسية -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-user-graduate"></i>
+                                        <h4 data-key="grants_school_recommendation">التوصية المدرسية</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewSchoolRecommendationStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- رسالة الدافع -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-envelope-open-text"></i>
+                                        <h4 data-key="grants_motivation_letter">رسالة الدافع</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewMotivationStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ابلكيشن فورم-->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-birthday-cake"></i>
+                                        <h4 data-key="grants_birth_certificate">ابلكيشن فورم</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewBirthCertificateStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓ مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- شهادة إنجليزية -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-language"></i>
+                                        <h4 data-key="grants_english_certificate">شهادة إنجليزية</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewEnglishCertificateStatus" class="review-status uploaded"
+                                                data-key="grants_upload_photo">✓ مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- كشف حساب بنكي -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                        <h4>كشف حساب بنكي</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewBankStatementStatus" class="review-status not-uploaded">✗
+                                                غير مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- فيديو تعريفي -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-video"></i>
+                                        <h4>فيديو تعريفي</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewIntroVideoStatus" class="review-status not-uploaded">✗ غير
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- المستندات الداعمة -->
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-alt"></i>
+                                        <h4>المستندات الداعمة (1)</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewSupportFile1Status" class="review-status not-uploaded">✗ غير
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-alt"></i>
+                                        <h4>المستندات الداعمة (2)</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewSupportFile2Status" class="review-status not-uploaded">✗ غير
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="document-card enhanced-card">
+                                    <div class="card-header">
+                                        <i class="fas fa-file-alt"></i>
+                                        <h4>المستندات الداعمة (3)</h4>
+                                    </div>
+                                    <div class="file-preview-box">
+                                        <div class="preview-content">
+                                            <span id="reviewSupportFile3Status" class="review-status not-uploaded">✗ غير
+                                                مرفوع</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+
+                        <!-- الموافقات -->
+                        <div class="review-approvals">
+                            <div class="approval-item">
+                                <input type="checkbox" id="agreeTerms" class="approval-checkbox">
+                                <label for="agreeTerms" class="clickable-terms" id="clickableTermsLabel">
+                                    <span data-key="grants_agree_terms">أوافق على الشروط والاحكام</span>
+                                </label>
+                            </div>
+                            <div class="approval-item">
+                                <input type="checkbox" id="confirmDocuments" class="approval-checkbox">
+                                <label for="confirmDocuments" data-key="grants_confirm_documents">أقر على صحة المستندات
+                                    المقدمة</label>
+                            </div>
+                        </div>
+
+                        <!-- أزرار التحكم -->
+                        <div class="form-actions">
+                            <button type="button" class="save-btn" id="savePdfBtn" disabled>
+                                <i class="fas fa-file-pdf"></i>
+                                <span data-key="grants_save_pdf">حفظ كPDF</span>
+                            </button>
+                            <button type="button" class="submit-btn" id="finalSubmitBtn" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                                <span data-key="grants_final_submit">تقديم الطلب</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- نافذة الشروط والاحكام المنبثقة -->
+                <div class="modal-overlay" id="termsModal">
+                    <div class="details-modal">
+                        <div class="modal-header">
+                            <h2 data-key="grants_terms_title">الشروط والاحكام</h2>
+                            <button class="close-modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="terms-content">
+                                <h3>شروط التقديم على المنح الدراسية</h3>
+                                <p>1. يجب أن يكون المتقدم حاصلاً على شهادة الثانوية العامة أو ما يعادلها.</p>
+                                <p>2. يجب تقديم جميع المستندات المطلوبة بشكل صحيح وكامل.</p>
+                                <p>3. يقر المتقدم بصحة المعلومات والمستندات المقدمة.</p>
+                                <p>4. لا يحق للمتقدم استرجاع الطلب بعد تقديمه.</p>
+                                <p>5. يجب الالتزام بالمواعيد النهائية للتقديم.</p>
+                            </div>
+                        </div>
+                        <div class="modal-actions">
+                            <button class="modal-apply-btn" data-key="grants_agree">موافق</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- رسالة الحفظ -->
+    <div class="save-message" id="saveMessage">
+        <div class="message-content">
+            <i class="fas fa-check-circle"></i>
+            <span data-key="grants_save_success">تم الحفظ بنجاح</span>
+        </div>
+    </div>
+
+
+
+
+
+    <div id="footer-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="com.js?v=2.0"></script>
+    <script src="gra.js?v=<?php echo time(); ?>"></script>
+</body>
+
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="contact_title">تواصل معنا - وكالة الهمداني</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="header-footer.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="contact.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/responsive.css?v=<?php echo time(); ?>">
+</head>
+
+<body>
+    <!-- الهيدر -->
+    <div id="header-container"></div>
+
+    <!-- الهيرو مع خلفية متحركة -->
+    <section class="modern-hero">
+        <div class="hero-background">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <span class="gradient-text" data-key="contact_hero_title">لنبدأ رحلتك</span>
+                <br><span data-key="contact_hero_subtitle">معاً نحو تحقيق الحلم</span>
+            </h1>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label" data-key="contact_stat1_label">دعم مستمر</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">1h</div>
+                    <div class="stat-label" data-key="contact_stat2_label">رد فوري</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- البطاقات التفاعلية -->
+    <section class="cards-section">
+        <div class="container">
+            <div class="cards-grid">
+                <!-- بطاقة المؤسسين -->
+                <div class="interactive-card founder-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 data-key="contact_card_team_title">فريقنا</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="team-members">
+                            <div class="member">
+                                <div class="member-avatar">
+                                    <i><img src="../images/contact/Hamdan.jpg" alt=""></i>
+                                </div>
+                                <div class="member-info">
+                                    <h4 data-key="contact_member1_name">همدان الخطيب</h4>
+                                    <p data-key="contact_member1_position">المدير التنفيذي</p>
+                                    <span></span>
+                                </div>
+                            </div>
+                            <div class="member">
+                                <div class="member-avatar">
+                                    <i><img src="../images/contact/mohanadsallam.webp" alt=""></i>
+                                </div>
+                                <div class="member-info">
+                                    <h4 data-key="contact_member2_name">مهند سلام</h4>
+                                    <p data-key="contact_member2_position">مدير إدارة المحتوى</p>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- بطاقة التواصل السريع -->
+                <div class="interactive-card contact-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 data-key="contact_card_contact_title">تواصل فوري</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="quick-contact">
+                            <a href="tel:+967738198397" class="contact-btn phone">
+                                <i class="fas fa-phone"></i>
+                                <span data-key="contact_immediate_call">اتصال فوري</span>
+                            </a>
+                            <a href="https://wa.me/967738198397" class="contact-btn whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                                <span data-key="contact_whatsapp">واتساب</span>
+                            </a>
+                            <a href="mailto:mohandsallam67@gmail.com" class="contact-btn email">
+                                <i class="fas fa-envelope"></i>
+                                <span data-key="contact_email">بريد إلكتروني</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- بطاقة وسائل التواصل -->
+                <div class="interactive-card social-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-share-alt"></i>
+                        </div>
+                        <h3 data-key="contact_card_social_title">تابعنا</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="social-links">
+                            <a href="#" class="social-link twitter">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="www.instagram.com/mohanadsallam1" class="social-link instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- نموذج التواصل الحديث -->
+    <section class="modern-form-section">
+        <div class="container">
+            <div class="form-wrapper">
+                <div class="form-header">
+                    <h2 data-key="contact_form_title">أرسل استفسارك</h2>
+                    <p data-key="contact_form_description">سنكون سعداء بمساعدتك في رحلتك التعليمية</p>
+                </div>
+
+                <form class="modern-form" id="modernContactForm">
+                    <div class="input-group">
+                        <div class="form-field">
+                            <input type="text" id="modernName" required>
+                            <label for="modernName" data-key="contact_form_name">الاسم الكامل</label>
+                            <div class="underline"></div>
+                        </div>
+
+                        <div class="form-field">
+                            <input type="email" id="modernEmail" required>
+                            <label for="modernEmail" data-key="contact_form_email">البريد الإلكتروني</label>
+                            <div class="underline"></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="form-field">
+                            <input type="tel" id="modernPhone">
+                            <label for="modernPhone" data-key="contact_form_phone">رقم الهاتف</label>
+                            <div class="underline"></div>
+                        </div>
+
+                        <div class="form-field">
+                            <select id="modernSubject" required>
+                                <option value=""></option>
+                                <option value="admission" data-key="contact_form_subject_option1">الاستفسار عن القبول
+                                </option>
+                                <option value="scholarship" data-key="contact_form_subject_option2">المنح الدراسية
+                                </option>
+                                <option value="documents" data-key="contact_form_subject_option3">المستندات المطلوبة
+                                </option>
+                                <option value="partnership" data-key="contact_form_subject_option4">شراكات الجامعات
+                                </option>
+                                <option value="other" data-key="contact_form_subject_option5">استفسار آخر</option>
+                            </select>
+                            <label for="modernSubject" data-key="contact_form_subject">نوع الاستفسار</label>
+                            <div class="underline"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-field full-width">
+                        <textarea id="modernMessage" required></textarea>
+                        <label for="modernMessage" data-key="contact_form_message">رسالتك</label>
+                        <div class="underline"></div>
+                    </div>
+
+                    <button type="submit" class="modern-submit-btn">
+                        <span class="btn-text" data-key="contact_form_submit">إرسال الرسالة</span>
+                        <div class="btn-loader">
+                            <div class="loader-dots">
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الجامعات الشريكة -->
+    <section class="partners-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-key="contact_partners_title">شركاؤنا في الصين</h2>
+                <p data-key="contact_partners_desc">نفتخر بشراكاتنا مع أعرق الجامعات الصينية</p>
+            </div>
+
+            <div class="partners-grid">
+                <div class="partner-card">
+                    <div class="partner-logo">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h4 data-key="contact_partner1_name">جامعة خبي للفنون</h4>
+                    <h5 data-key="contact_partner1_Ename">Hebei Academy of fine art</h5><br>
+                    <div class="partner-tags">
+                        <span class="tag" data-key="contact_partner1_tag1">الفنون</span>
+                        <span class="tag" data-key="contact_partner1_tag2">التصميم</span>
+                        <span class="tag" data-key="contact_partner1_tag3">السينما</span>
+                    </div>
+                </div>
+
+                <div class="partner-card">
+                    <div class="partner-logo">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <h4 data-key="contact_partner2_name">جامعة يان آن</h4>
+                    <h5 data-key="contact_partner2_Ename">Yan'an University</h5><br>
+                    <div class="partner-tags">
+                        <span class="tag" data-key="contact_partner2_tag1">الطب</span>
+                        <span class="tag" data-key="contact_partner2_tag2">الاقتصاد</span>
+                        <span class="tag" data-key="contact_partner2_tag3">الهندسة</span>
+                    </div>
+                </div>
+
+                <div class="partner-card">
+                    <div class="partner-logo">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h4 data-key="contact_partner3_name">جامعة شاويانغ</h4>
+                    <h5 data-key="contact_partner3_Ename">Shaoyang University</h5><br>
+                    <div class="partner-tags">
+                        <span class="tag" data-key="contact_partner3_tag1">القانون</span>
+                        <span class="tag" data-key="contact_partner3_tag2">التاريخ</span>
+                        <span class="tag" data-key="contact_partner3_tag3">الإدارة</span>
+                    </div>
+                </div>
+
+                <div class="partner-card">
+                    <div class="partner-logo">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <h4 data-key="contact_partner4_name">جامعة شوتشو</h4>
+                    <h5 data-key="contact_partner4_Ename">Xuzhou University</h5>
+                    <div class="partner-tags">
+                        <span class="tag" data-key="contact_partner4_tag1">الأدب</span>
+                        <span class="tag" data-key="contact_partner4_tag2">التجارة الدولية</span>
+                        <span class="tag" data-key="contact_partner4_tag3">التسويق</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الأسئلة الشائعة المطور -->
+    <section class="advanced-faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 data-key="contact_faq_title">أسئلة متكررة</h2>
+                <p data-key="contact_faq_desc">إجابات عن أكثر الاستفسارات شيوعاً</p>
+            </div>
+
+            <div class="faq-container">
+                <div class="faq-categories">
+                    <button class="category-btn active" data-category="general"
+                        data-key="contact_faq_category1">عام</button>
+                    <button class="category-btn" data-category="admission"
+                        data-key="contact_faq_category2">القبول</button>
+                </div>
+
+                <div class="faq-content">
+                    <div class="faq-category active" id="general">
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span data-key="contact_faq1_question">ما هي وكالة الهمداني؟</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p data-key="contact_faq1_answer">مؤسسة متخصصة في تقديم خدمات القبول الجامعي وتوفير
+                                    الدعم والارشاد للطلاب الراغبين في الدراسة بالخارج في اعرق الجامعات.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span data-key="contact_faq2_question">هل الوكالة معتمدة رسمياً؟</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p data-key="contact_faq2_answer">نعم ، الوكالة تعمل بتصريح رسمي وتتعامل مباشرة مع
+                                    الجامعات والملحقيات الثقافية لضمان موثوقية القبولات.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span data-key="contact_faq3_question">ما هي الخدمات التي تقدمها الوكالة؟</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p data-key="contact_faq3_answer">تشمل الخدمات: التقديم على الجامعات ، تجهيز المستندات ،
+                                    الترجمة ،المتابعة حتى القبول.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="faq-category" id="admission">
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span data-key="contact_faq4_question">ما هي المستندات المطلوبة للتقديم؟</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p data-key="contact_faq4_answer">عادة ما تشمل: صورة الجواز ، الشهادات الاكاديمية ،
+                                    السجل الدراسي ، الصورة الشخصية ، ورسالة الدافع أو التوصيات إن وجدت.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span data-key="contact_faq5_question">هل الوكالة تساعد في اختيار التخصص المناسب؟</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <p data-key="contact_faq5_answer">بالتأكيد ، توفر الوكالة خدمة الاستشارة الاكاديمية
+                                    المجانية لمساعدة الطالب على اختيار التخصص الأنسب لقدراته وسوق العمل العالمي.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- الفوتر -->
+    <div id="footer-container"></div>
+
+    <script src="contact.js?v=<?php echo time(); ?>"></script>
+    <script src="com.js?v=<?php echo time(); ?>"></script>
+</body>
+
+</htm
